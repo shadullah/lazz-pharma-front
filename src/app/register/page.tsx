@@ -3,6 +3,7 @@ import React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/utils/cn";
+import Link from "next/link";
 
 const Register = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -64,6 +65,12 @@ const Register = () => {
 
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
       </form>
+      <p>
+        Already registered?{" "}
+        <span className="italic underline">
+          <Link href={"/login"}>Login Here</Link>
+        </span>
+      </p>
     </div>
   );
 };

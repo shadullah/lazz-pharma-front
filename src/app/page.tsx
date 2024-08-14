@@ -1,4 +1,4 @@
-import FeaturedProducts from "@/components/FeaturedProducts";
+import FeaturedProducts from "@/app/products/page";
 import HeroSection from "@/components/HeroSection";
 import Image from "next/image";
 

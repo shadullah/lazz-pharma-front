@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { BackgroundGradient } from "./ui/background-gradient";
+import { BackgroundGradient } from "../../components/ui/background-gradient";
 import Image from "next/image";
 import Link from "next/link";
 import { Audio } from "react-loader-spinner";
@@ -57,19 +57,19 @@ const FeaturedProducts = () => {
         </div>
       </div>
       <div className="mt-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 justify-center m-12">
-          {loading ? (
-            <div className="flex justify-center">
-              <Audio
-                height="80"
-                width="80"
-                //   radius="9"
-                color="gray"
-                ariaLabel="loading"
-              />
-            </div>
-          ) : (
-            <>
+        {loading ? (
+          <div className="flex justify-center">
+            <Audio
+              height="80"
+              width="80"
+              //   radius="9"
+              color="gray"
+              ariaLabel="loading"
+            />
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 justify-center m-12">
               {products?.map((product: Product) => (
                 <div className="flex justify-center" key={product?._id}>
                   <BackgroundGradient className="flex flex-col rounded-[22px] bg-white dark:bg-zinc-900 overflow-hidden h-full max-w-sm">
@@ -83,10 +83,10 @@ const FeaturedProducts = () => {
                       />
                       <p className="text-3xl font-bold">{product.name}</p>
 
-                      <p className="text-justify my-2">{product.description}</p>
-                      <p>${product.price}</p>
+                      {/* <p className="text-justify my-2">{product.description}</p> */}
+                      <p className="my-3">৳ {product.price}</p>
                       <Link
-                        href={"/:id"}
+                        href={`/products/${product._id}`}
                         className="bg-slate-700 w-full py-2 rounded-2xl text-sm"
                       >
                         Details
@@ -95,9 +95,9 @@ const FeaturedProducts = () => {
                   </BackgroundGradient>
                 </div>
               ))}
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

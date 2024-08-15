@@ -69,33 +69,41 @@ const FeaturedProducts = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 justify-center m-12">
-              {products?.map((product: Product) => (
-                <div className="flex justify-center" key={product?._id}>
-                  <BackgroundGradient className="flex flex-col rounded-[22px] bg-white dark:bg-zinc-900 overflow-hidden h-full max-w-sm">
-                    <div className="p-4 sm:p-6 flex flex-col items-center text-center flex-grow">
-                      <Image
-                        src={product.productImage}
-                        alt="productImage"
-                        height="400"
-                        width="400"
-                        className="object-contain rounded-2xl mb-2"
-                      />
-                      <p className="text-3xl font-bold">{product.name}</p>
+            {products?.length === 0 ? (
+              <div className="text-3xl bg-red-600 text-center py-2 my-24 w-full md:w-1/2 mx-auto rounded-lg">
+                <p>No Products Found or server error</p>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 justify-center m-12">
+                  {products?.map((product: Product) => (
+                    <div className="flex justify-center" key={product?._id}>
+                      <BackgroundGradient className="flex flex-col rounded-[22px] bg-white dark:bg-zinc-900 overflow-hidden h-full max-w-sm">
+                        <div className="p-4 sm:p-6 flex flex-col items-center text-center flex-grow">
+                          <Image
+                            src={product.productImage}
+                            alt="productImage"
+                            height="400"
+                            width="400"
+                            className="object-contain rounded-2xl mb-2"
+                          />
+                          <p className="text-3xl font-bold">{product.name}</p>
 
-                      {/* <p className="text-justify my-2">{product.description}</p> */}
-                      <p className="my-3">৳ {product.price}</p>
-                      <Link
-                        href={`/products/${product._id}`}
-                        className="bg-slate-700 w-full py-2 rounded-2xl text-sm"
-                      >
-                        Details
-                      </Link>
+                          {/* <p className="text-justify my-2">{product.description}</p> */}
+                          <p className="my-3">৳ {product.price}</p>
+                          <Link
+                            href={`/products/${product._id}`}
+                            className="bg-slate-700 w-full py-2 rounded-2xl text-sm"
+                          >
+                            Details
+                          </Link>
+                        </div>
+                      </BackgroundGradient>
                     </div>
-                  </BackgroundGradient>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </>
+            )}
           </>
         )}
       </div>

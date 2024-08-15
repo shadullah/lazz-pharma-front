@@ -20,12 +20,14 @@ const HeroSection = () => {
           help and support you in evey struggle you face
         </p>
         <div className="mt-6">
-          <Button
-            borderRadius="1.75rem"
-            className="bg-white dark:bg-slate-900 text-black dark:text-white border-neutral-200 dark:border-slate-800"
-          >
-            Explore Store
-          </Button>
+          <Link href={"/login"}>
+            <Button
+              borderRadius="1.75rem"
+              className="bg-white dark:bg-slate-900 text-black dark:text-white border-neutral-200 dark:border-slate-800"
+            >
+              Explore Store
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

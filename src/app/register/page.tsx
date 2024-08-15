@@ -136,7 +136,7 @@ const Register = () => {
           type="submit"
           disabled={loading}
         >
-          {loading ? "Signing up..." : "Sign up &rarr;"}
+          {loading ? "Signing up..." : `Sign up`} &rarr;
           <BottomGradient />
         </button>
 

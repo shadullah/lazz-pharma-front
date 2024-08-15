@@ -72,6 +72,34 @@ const ProductDetails = ({ params }: any) => {
     getCategory();
   }, [product?.category]);
 
+  const handleAddToCart = async () => {
+    if (!product) return;
+
+    try {
+      const token = localStorage.getItem("accessToken"); // Get the user's access token
+      if (!token) {
+        toast.error("User not authenticated");
+        return;
+      }
+
+      await axios.post(
+        "http://localhost:8000/api/v1/carts/create",
+        {
+          productId: product._id,
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Product added to cart!");
+    } catch (error) {
+      toast.error("Failed to add product to cart");
+    }
+  };
+
   return (
     <div>
       <h1 className="text-5xl font-bold mt-36 mb-12 text-center">
@@ -140,6 +168,7 @@ const ProductDetails = ({ params }: any) => {
                     cursorControl ? "cursor-pointer" : "cursor-not-allowed"
                   }`}
                   disabled={!cursorControl}
+                  onClick={handleAddToCart}
                 >
                   Add to Cart
                 </button>

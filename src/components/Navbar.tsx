@@ -7,14 +7,17 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { headers } from "next/headers";
 import { useRouter } from "next/navigation";
+import { ColorRing } from "react-loader-spinner";
 
 function Navbar({ className }: { className?: string }) {
   const [active, setActive] = useState<string | null>(null);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   // const handleLogout = async () => {
+  //   setLoading(true);
   //   try {
-  //     const res = axios.post("http://localhost:8000/api/v1/users/logout", {
+  //     axios.post("http://localhost:8000/api/v1/users/logout", {
   //       headers: {
   //         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
   //       },
@@ -29,16 +32,26 @@ function Navbar({ className }: { className?: string }) {
   //   } catch (error) {
   //     console.log(error);
   //     toast.error("Logout Failed", { duration: 3000 });
+  //   } finally {
+  //     setLoading(false);
   //   }
   // };
 
   const handleLogout = () => {
-    // Clear tokens from localStorage
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    setLoading(true);
+    try {
+      // Clear tokens from localStorage
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
 
-    // Redirect to the login page
-    router.push("/login");
+      // Redirect to the login page
+      router.push("/login");
+    } catch (error) {
+      console.log(error);
+      toast.error("logout failed", { duration: 3000 });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,43 +73,59 @@ function Navbar({ className }: { className?: string }) {
             <HoveredLink href="/courses">Song writing</HoveredLink> */}
           </div>
         </MenuItem>
-        <Link href={"/contact"}>
-          <MenuItem
-            setActive={setActive}
-            active={active}
-            item="Contact Us"
-          ></MenuItem>
-        </Link>
-        {localStorage.getItem("accessToken") ? (
-          <>
-            <Link href={"/contact"}>
-              <MenuItem
-                setActive={setActive}
-                active={active}
-                item="Dashboard"
-              ></MenuItem>
-            </Link>
-            <div>
-              <button
-                // setActive={setActive}
-                // active={active}
-                // item="Logout"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </div>
-          </>
-        ) : (
+        {loading ? (
           <div>
-            <Link href={"/login"}>
-              <MenuItem
-                setActive={setActive}
-                active={active}
-                item="Login"
-              ></MenuItem>
-            </Link>
+            <ColorRing
+              visible={true}
+              height="20"
+              width="20"
+              ariaLabel="color-ring-loading"
+              wrapperStyle={{}}
+              wrapperClass="color-ring-wrapper"
+              colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+            />
           </div>
+        ) : (
+          <>
+            {localStorage.getItem("accessToken") ? (
+              <>
+                <Link href={"/cart"}>
+                  <MenuItem
+                    setActive={setActive}
+                    active={active}
+                    item="Cart"
+                  ></MenuItem>
+                </Link>
+                <Link href={"/contact"}>
+                  <MenuItem
+                    setActive={setActive}
+                    active={active}
+                    item="Dashboard"
+                  ></MenuItem>
+                </Link>
+                <div>
+                  <button
+                    // setActive={setActive}
+                    // active={active}
+                    // item="Logout"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div>
+                <Link href={"/login"}>
+                  <MenuItem
+                    setActive={setActive}
+                    active={active}
+                    item="Login"
+                  ></MenuItem>
+                </Link>
+              </div>
+            )}
+          </>
         )}
       </Menu>
     </div>

@@ -29,8 +29,12 @@ const Login = () => {
         password: formData.get("password"),
       });
 
-      const { accessToken, refreshToken } = res.data?.data;
+      const { accessToken, refreshToken, user } = res.data?.data;
+      console.log(res.data?.data);
+      const { _id } = user;
+      console.log(_id);
 
+      localStorage.setItem("id", _id);
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 

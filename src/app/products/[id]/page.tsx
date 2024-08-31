@@ -34,6 +34,7 @@ const ProductDetails = ({ params }: any) => {
   const [product, setProduct] = useState<Product | null>(null);
   const [cat, setCat] = useState<Category | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isInCart, setIsInCart] = useState(false);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -43,6 +44,7 @@ const ProductDetails = ({ params }: any) => {
         );
         console.log(res.data);
         setProduct(res.data?.data);
+
       } catch (err) {
         console.log(err);
         toast.error("Details could not fetched", { duration: 3000 });
@@ -54,6 +56,8 @@ const ProductDetails = ({ params }: any) => {
   }, [id]);
 
   const cursorControl = product?.stock;
+  const discount = product?.discount ?? 0;
+  const originalPrice = product?.price ?? 0 / (1 - discount / 100);
 
   useEffect(() => {
     const getCategory = async () => {
@@ -82,11 +86,18 @@ const ProductDetails = ({ params }: any) => {
         return;
       }
 
+      const userId = localStorage.getItem("id");
+      if (!userId) {
+        toast.error("Failed to fetch userId");
+        return;
+      }
+
       await axios.post(
         "http://localhost:8000/api/v1/carts/create",
         {
           productId: product._id,
           quantity: 1,
+          customer: userId,
         },
         {
           headers: {
@@ -155,12 +166,15 @@ const ProductDetails = ({ params }: any) => {
                     <span className="text-red-600">Out of Stock</span>
                   )}
                 </p>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-6">
                   <h3 className="text-orange-600 text-3xl font-bold my-3">
                     ৳ {product?.price}
                   </h3>
-                  <div className="bg-pink-400 w-10 text-center rounded-full">
-                    <span>{product?.discount} %</span>
+                  <p className="line-through text-gray-500">
+                    ৳ {originalPrice.toFixed(2)}
+                  </p>
+                  <div className="bg-pink-400 px-2 py-1 text-center rounded-full">
+                    <span>{product?.discount} % OFF</span>
                   </div>
                 </div>
                 <button

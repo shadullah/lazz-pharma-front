@@ -41,6 +41,7 @@ function Navbar({ className }: { className?: string }) {
     setLoading(true);
     try {
       // Clear tokens from localStorage
+      localStorage.removeItem("id");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
 

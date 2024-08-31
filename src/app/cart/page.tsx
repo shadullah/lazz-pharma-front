@@ -4,15 +4,21 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import toast from "react-hot-toast";
+import { Audio } from "react-loader-spinner";
 
 const PortalComponent = ({ children, onClose }: any) => {
   return ReactDOM.createPortal(<div>{children}</div>, document.body);
 };
 interface CartItem {
   _id: string;
-  productId: string;
+  productId: {
+    _id: string;
+    name: string;
+    discount: string;
+  };
   quantity: number;
   customer: string;
+  name: string;
 }
 
 interface ApiResponse<T> {
@@ -36,8 +42,13 @@ const CartPage = () => {
           return;
         }
 
+        const id = localStorage.getItem("id");
+        if (!id) {
+          toast.error("User id not found");
+        }
+
         const res = await axios.get<ApiResponse<CartItem[]>>(
-          "http://localhost:8000/api/v1/carts/list",
+          `http://localhost:8000/api/v1/carts/user/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -45,7 +56,7 @@ const CartPage = () => {
           }
         );
         console.log(res.data?.data);
-        setCartItems(res.data.data);
+        setCartItems(res.data?.data);
       } catch (err) {
         toast.error("Failed to fetch cart items", { duration: 3000 });
       } finally {
@@ -102,6 +113,31 @@ const CartPage = () => {
     }
   };
 
+  const handleDelete = async (itemId: string) => {
+    try {
+      axios.delete(
+        `http://localhost:8000/api/v1/carts/user/${itemId}`,
+
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+          data: {
+            customerId: cartItems?.find((item) => item?._id === itemId)
+              ?.customer,
+          },
+        }
+      );
+      setCartItems((prevItems) =>
+        prevItems.filter((item) => item._id !== itemId)
+      );
+      toast.success("deleted successfully!!");
+    } catch (error) {
+      toast.error("Couldn't Delete the item");
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="mt-36 mb-12">
@@ -129,42 +165,71 @@ const CartPage = () => {
                     X
                   </button>
                 </div>
-                <div className="my-6">
-                  {cartItems.map((item) => (
-                    <div key={item._id} className="">
-                      <div className="flex justify-between my-2 space-y-3">
-                        <p>Product ID: {item.productId}</p>
-                        <div>
-                          <h1>Quantity</h1>
-                          <p className="mt-3 space-x-2">
-                            <span
-                              onClick={() => handleMinus(item._id)}
-                              className="text-sm font-extrabold bg-gray-700 px-2 py-1 rounded-md cursor-pointer"
-                            >
-                              -
-                            </span>
-                            <span className="text-xl">{item.quantity}</span>
-                            <span
-                              onClick={() => handlePlus(item._id)}
-                              className="text-sm font-extrabold bg-gray-700 px-2 py-1 rounded-md cursor-pointer"
-                            >
-                              +
-                            </span>
-                          </p>
+                {loading ? (
+                  <div className="flex justify-center">
+                    <Audio
+                      height="80"
+                      width="80"
+                      //   radius="9"
+                      color="white"
+                      ariaLabel="loading"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <div className="my-6">
+                      {cartItems.map((item) => (
+                        <div key={item._id} className="">
+                          <div className="flex justify-between items-center my-2 space-y-3">
+                            <div className="w-1/4 mx-auto">
+                              <h3>Product Name</h3>
+                              <p>{item.productId.name}</p>
+                            </div>
+                            <div className="w-1/4 mx-auto">
+                              <h1>Quantity</h1>
+                              <p className="mt-3 space-x-2">
+                                <span
+                                  onClick={() => handleMinus(item._id)}
+                                  className="text-sm font-extrabold bg-gray-700 px-2 py-1 rounded-md cursor-pointer"
+                                >
+                                  -
+                                </span>
+                                <span className="text-xl">{item.quantity}</span>
+                                <span
+                                  onClick={() => handlePlus(item._id)}
+                                  className="text-sm font-extrabold bg-gray-700 px-2 py-1 rounded-md cursor-pointer"
+                                >
+                                  +
+                                </span>
+                              </p>
+                            </div>
+                            <div className="w-1/4 mx-auto">
+                              <h3>Discount</h3>
+                              <p>{item.productId.discount}</p>
+                            </div>
+                            <div className="w-1/4 mx-auto">
+                              <h3>Action</h3>
+                              <button
+                                onClick={() => handleDelete(item?._id)}
+                                className="px-3 py-2 bg-red-600 rounded-lg"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
                         </div>
-                        <p>discount</p>
+                      ))}
+                      <div className="flex justify-center mt-12">
+                        <button
+                          onClick={handleCartUpdate}
+                          className="px-3 py-2 bg-gray-900 rounded-lg"
+                        >
+                          Checkout &rarr;
+                        </button>
                       </div>
                     </div>
-                  ))}
-                  <div className="flex justify-center">
-                    <button
-                      onClick={handleCartUpdate}
-                      className="px-3 py-2 bg-gray-900 rounded-lg"
-                    >
-                      Checkout &rarr;
-                    </button>
-                  </div>
-                </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

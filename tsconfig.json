@@ -12,6 +12,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "types": ["./src/react-portal.d.ts"],
     "plugins": [
       {
         "name": "next"

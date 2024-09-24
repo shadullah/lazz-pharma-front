@@ -1,11 +1,16 @@
 import FeaturedProducts from "@/app/products/page";
+import Banner from "@/components/Banner";
 import HeroSection from "@/components/HeroSection";
+import { Sidebard } from "@/components/Sidebard";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-black/[0.96] antialiased bg-grid-white/[0.2]">
-      <HeroSection />
+    <main className="">
+      {/* <HeroSection /> */}
+      <Banner />
+      {/* <Sidebard /> */}
+
       <FeaturedProducts />
     </main>
   );

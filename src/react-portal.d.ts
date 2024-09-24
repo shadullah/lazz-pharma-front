@@ -15,3 +15,17 @@ declare module 'react-portal' {
     export class PortalWithState extends React.Component<PortalWithStateProps> {}
   }
   
+  declare module "react-awesome-slider/dist/autoplay" {
+    import AwesomeSlider, { AwesomeSliderProps } from "react-awesome-slider";
+  
+    interface AutoplaySliderProps extends AwesomeSliderProps {
+      play?: boolean;
+      interval?: number;
+      cancelOnInteraction?: boolean;
+    }
+  
+    const withAutoplay: (slider: typeof AwesomeSlider) => React.ComponentType<AutoplaySliderProps>;
+  
+    export default withAutoplay;
+  }
+  
